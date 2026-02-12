@@ -14,7 +14,7 @@ scale or clinical decision-making.
 
 ## 🚀 Live Demo
 
-🔗 [Deployed on Vercel](https://your-app.vercel.app)
+🔗 [Deployed on Vercel](https://jarurat-care-ai-support.vercel.app/)
 
 ## 🛠 Tech Stack
 
