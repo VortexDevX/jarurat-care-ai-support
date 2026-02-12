@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PatientForm from "@/components/PatientForm";
 import ResultCard from "@/components/ResultCard";
+import Skeleton from "@/components/Skeleton";
+import Toast from "@/components/Toast";
 import { FaShieldAlt, FaClock, FaUsers } from "react-icons/fa";
 
 interface AnalysisResult {
@@ -18,26 +20,46 @@ export default function Home() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [source, setSource] = useState<"ai" | "fallback">("ai");
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const handleResult = (data: AnalysisResult, src?: "ai" | "fallback") => {
     setError("");
     setResult(data);
     setSource(src || "ai");
+    setLoading(false);
+    setShowToast(true);
   };
 
   const handleError = (msg: string) => {
     setResult(null);
     setError(msg);
+    setLoading(false);
   };
 
   const handleReset = () => {
     setResult(null);
     setError("");
+    setLoading(false);
   };
+
+  const handleLoading = (isLoading: boolean) => {
+    setLoading(isLoading);
+  };
+
+  const closeToast = useCallback(() => {
+    setShowToast(false);
+  }, []);
 
   return (
     <>
       <Header />
+
+      <Toast
+        message="Your support request has been analyzed successfully."
+        show={showToast}
+        onClose={closeToast}
+      />
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-10">
         {/* Hero */}
@@ -46,14 +68,14 @@ export default function Home() {
             Healthcare Support,{" "}
             <span className="text-rose-600">AI-Powered</span>
           </h1>
-          <p className="text-gray-500 max-w-xl mx-auto">
+          <p className="text-gray-500 max-w-xl mx-auto text-sm sm:text-base">
             Submit a patient support request and let our AI instantly summarize,
             classify urgency, and recommend next steps for the volunteer team.
           </p>
         </div>
 
         {/* Feature Pills */}
-        <div className="flex flex-wrap justify-center gap-3 mb-10 print:hidden">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 print:hidden">
           {[
             { icon: <FaClock />, text: "Instant AI Analysis" },
             { icon: <FaShieldAlt />, text: "Urgency Classification" },
@@ -61,7 +83,7 @@ export default function Home() {
           ].map((item, i) => (
             <span
               key={i}
-              className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-600 text-sm px-4 py-2 rounded-full shadow-sm"
+              className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-600 text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-full shadow-sm"
             >
               <span className="text-rose-500">{item.icon}</span>
               {item.text}
@@ -76,11 +98,21 @@ export default function Home() {
           </div>
         )}
 
-        {/* Form or Result */}
-        {result ? (
+        {/* Loading Skeleton */}
+        {loading && !result && <Skeleton />}
+
+        {/* Result */}
+        {result && !loading && (
           <ResultCard result={result} onReset={handleReset} source={source} />
-        ) : (
-          <PatientForm onResult={handleResult} onError={handleError} />
+        )}
+
+        {/* Form — hidden when loading or showing result */}
+        {!result && !loading && (
+          <PatientForm
+            onResult={handleResult}
+            onError={handleError}
+            onLoading={handleLoading}
+          />
         )}
       </main>
 

@@ -26,6 +26,7 @@ interface AnalysisResult {
 interface PatientFormProps {
   onResult: (data: AnalysisResult, source?: "ai" | "fallback") => void;
   onError: (msg: string) => void;
+  onLoading: (loading: boolean) => void;
 }
 
 const CANCER_TYPES = [
@@ -52,7 +53,11 @@ const SUPPORT_TYPES = [
   "Other",
 ];
 
-export default function PatientForm({ onResult, onError }: PatientFormProps) {
+export default function PatientForm({
+  onResult,
+  onError,
+  onLoading,
+}: PatientFormProps) {
   const [form, setForm] = useState<FormData>({
     name: "",
     cancerType: "",
@@ -60,7 +65,6 @@ export default function PatientForm({ onResult, onError }: PatientFormProps) {
     supportType: "",
     message: "",
   });
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -72,7 +76,7 @@ export default function PatientForm({ onResult, onError }: PatientFormProps) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    onLoading(true);
 
     try {
       const res = await fetch("/api/analyze", {
@@ -91,18 +95,16 @@ export default function PatientForm({ onResult, onError }: PatientFormProps) {
       onResult(data.data, data.source);
     } catch {
       onError("Network error. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 md:p-8 space-y-5"
+      className="bg-white rounded-2xl shadow-md border border-gray-100 p-5 sm:p-6 md:p-8 space-y-5"
     >
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
           Healthcare Support Request
         </h2>
         <p className="text-gray-500 text-sm mt-1">
@@ -116,7 +118,7 @@ export default function PatientForm({ onResult, onError }: PatientFormProps) {
         <label className="block text-sm font-medium text-gray-700 mb-2">
           You are a <span className="text-rose-500">*</span>
         </label>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           {["Patient", "Caregiver", "Family Member"].map((r) => (
             <label
               key={r}
@@ -141,7 +143,7 @@ export default function PatientForm({ onResult, onError }: PatientFormProps) {
         </div>
       </div>
 
-      {/* 2. Support Type — Primary Triage Field */}
+      {/* 2. Support Type */}
       <div>
         <label className="text-sm font-semibold text-gray-800 mb-1 flex items-center gap-1.5">
           <FaHandHoldingHeart className="text-rose-400 text-xs" />
@@ -227,20 +229,10 @@ export default function PatientForm({ onResult, onError }: PatientFormProps) {
       <div className="space-y-2 pt-1">
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-rose-600 hover:bg-rose-700 disabled:bg-rose-400 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition cursor-pointer disabled:cursor-not-allowed"
+          className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition cursor-pointer"
         >
-          {loading ? (
-            <>
-              <FaSpinner className="animate-spin" />
-              Analyzing...
-            </>
-          ) : (
-            <>
-              <FaPaperPlane />
-              Submit Request
-            </>
-          )}
+          <FaPaperPlane />
+          Submit Request
         </button>
         <p className="text-xs text-gray-500 text-center">
           Our volunteer team will review and respond as soon as possible.

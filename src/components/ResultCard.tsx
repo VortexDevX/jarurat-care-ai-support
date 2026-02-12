@@ -64,12 +64,14 @@ export default function ResultCard({
   const timestamp = getTimestamp();
 
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 md:p-8 space-y-5 animate-fade-in print:shadow-none print:border print:border-gray-300">
+    <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5 sm:p-6 md:p-8 space-y-5 animate-fade-in print:shadow-none print:border print:border-gray-300">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <FaRobot className="text-rose-500 text-xl" />
-          <h2 className="text-xl font-bold text-gray-900">AI Analysis</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+            AI Analysis
+          </h2>
           {source === "fallback" && (
             <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full border border-gray-200">
               Rule-Based
@@ -77,7 +79,7 @@ export default function ResultCard({
           )}
         </div>
         <span
-          className={`inline-flex items-center gap-1.5 text-sm font-semibold px-3 py-1 rounded-full border ${config.badge}`}
+          className={`inline-flex items-center gap-1.5 text-sm font-semibold px-3 py-1 rounded-full border w-fit ${config.badge}`}
         >
           {config.icon}
           {config.label}
@@ -85,30 +87,34 @@ export default function ResultCard({
       </div>
 
       {/* 1. Summary */}
-      <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+      <div className="bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-200">
         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
           Summary
         </h3>
-        <p className="text-gray-800 leading-relaxed">{result.summary}</p>
+        <p className="text-sm sm:text-base text-gray-800 leading-relaxed">
+          {result.summary}
+        </p>
       </div>
 
       {/* 2. Urgency Reason */}
-      <div className={`rounded-xl p-5 border ${config.color}`}>
+      <div className={`rounded-xl p-4 sm:p-5 border ${config.color}`}>
         <h3 className="text-sm font-semibold uppercase tracking-wide mb-2 opacity-80">
           Urgency Reason
         </h3>
-        <p className="leading-relaxed">{result.urgencyReason}</p>
+        <p className="text-sm sm:text-base leading-relaxed">
+          {result.urgencyReason}
+        </p>
       </div>
 
       {/* 3. Suggested Next Steps */}
-      <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
+      <div className="bg-blue-50 rounded-xl p-4 sm:p-5 border border-blue-200">
         <div className="flex items-center gap-2 mb-2">
           <FaHandsHelping className="text-blue-500" />
           <h3 className="text-sm font-semibold text-blue-700 uppercase tracking-wide">
             Suggested Next Steps (Non-Medical)
           </h3>
         </div>
-        <p className="text-blue-800 leading-relaxed">
+        <p className="text-sm sm:text-base text-blue-800 leading-relaxed">
           {result.suggestedNextSteps}
         </p>
       </div>
@@ -122,7 +128,7 @@ export default function ResultCard({
         </p>
       </div>
 
-      {/* Actions — hidden in print */}
+      {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3 pt-1 print:hidden">
         <button
           onClick={onReset}
@@ -138,7 +144,7 @@ export default function ResultCard({
         </button>
       </div>
 
-      {/* Timestamp — shown at bottom, prominent in print */}
+      {/* Timestamp */}
       <div className="text-center pt-2 print:pt-4">
         <p className="text-xs text-gray-400 print:text-gray-600">
           Generated on: {timestamp}
