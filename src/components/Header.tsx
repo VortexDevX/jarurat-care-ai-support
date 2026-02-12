@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { FaHeartbeat } from "react-icons/fa";
 
 const NAV_LINKS = [
@@ -12,15 +12,27 @@ const NAV_LINKS = [
 export default function Header() {
   const pathname = usePathname();
 
+  const handleLogoClick = () => {
+    if (pathname === "/") {
+      window.location.reload();
+    } else {
+      window.location.href = "/";
+    }
+  };
+
   return (
     <header className="w-full bg-white border-b border-gray-200 shadow-sm print:shadow-none">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 no-underline">
+        <button
+          onClick={handleLogoClick}
+          className="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 rounded-lg"
+          aria-label="Go to homepage"
+        >
           <div className="bg-rose-100 text-rose-600 p-2 rounded-xl">
             <FaHeartbeat className="text-2xl" />
           </div>
-          <div>
+          <div className="text-left">
             <h1 className="text-xl font-bold text-gray-900 leading-tight">
               Jarurat Care
             </h1>
@@ -28,7 +40,7 @@ export default function Header() {
               Cancer Care Support Community
             </p>
           </div>
-        </Link>
+        </button>
 
         {/* Nav */}
         <div className="flex items-center gap-4">
